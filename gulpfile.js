@@ -17,7 +17,7 @@ gulp.task('clean', function() {
     del('dist');
 });
 
-gulp.task('scripts', function(cb) {
+gulp.task('scripts', ['clean'], function(cb) {
     pump([
         merge(
             download(paths.vendor).pipe(uglify()),
@@ -28,7 +28,7 @@ gulp.task('scripts', function(cb) {
     ], cb);
 });
 
-gulp.task('stylesheets', function() {
+gulp.task('stylesheets', ['clean'], function() {
     return gulp.src('src/*.css')
         .pipe(cleanCSS())
         .pipe(concat('MiradorRuler.min.css'))
