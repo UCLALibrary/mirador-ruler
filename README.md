@@ -13,6 +13,8 @@ npm install
 gulp
 ```
 
+This will minify all source files as well as download and tack on one dependency, namely [ UCLALibrary's fork of the OpenSeadragonScalebar plugin](https://github.com/UCLALibrary/OpenSeadragonScalebar).
+
 Now look in the 'dist/' folder. Drop these files into your Mirador build output directory and point your webpage to them:
 
 ```html
