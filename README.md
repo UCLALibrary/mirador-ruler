@@ -2,6 +2,8 @@
 
 When an IIIF physical dimension service is provided for an image resource, this plugin renders a ruler overlay on a window.
 
+Currently, this plugin supports Mirador 2.5+.
+
 ## Setup
 
 You can find production-ready build artifacts inside the 'dist/' folder.
