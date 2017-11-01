@@ -292,7 +292,7 @@ var MiradorRuler = {
                 type = OpenSeadragon.ScalebarType.NONE;
               }
               else if (v === 'visible') {
-                type = OpenSeadragon.ScalebarType.RULER;
+                type = OpenSeadragon.ScalebarType.MACRO;
               }
               osdInstance.scalebar({'type': type});
             };
