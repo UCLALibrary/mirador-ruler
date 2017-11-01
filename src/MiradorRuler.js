@@ -75,17 +75,7 @@ var MiradorRuler = {
          * Mirador.Window
          */
         (function($) {
-            var init = $.Window.prototype.init,
-                bindEvents = $.Window.prototype.bindEvents;
-
-            $.Window.prototype.init = function() {
-                var _this = this;
-                init.apply(this, arguments);
-
-                this.element.find('.manifest-info .mirador-tooltip.mirador-icon-ruler').each(function() {
-                    _this.createOrUpdateTooltip(this, 'right');
-                });
-            };
+            var bindEvents = $.Window.prototype.bindEvents;
 
             $.Window.prototype.bindEvents = function() {
                 var _this = this;
@@ -387,12 +377,11 @@ var MiradorRuler = {
          * Mirador.ImageView
          */
         (function($) {
-            var bindEvents = $.ImageView.prototype.bindEvents,
-                listenForActions = $.ImageView.prototype.listenForActions;
+            var listenForActions = $.ImageView.prototype.listenForActions;
 
             $.ImageView.prototype.listenForActions = function() {
                 var _this = this;
-                bindEvents.apply(this, arguments);
+                listenForActions.apply(this, arguments);
 
                 this.eventEmitter.subscribe('image-status-updated' + this.windowId, function(event, imageResource) {
 
