@@ -35,4 +35,4 @@ gulp.task('stylesheets', ['clean'], function() {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['clean', 'scripts', 'stylesheets']);
+gulp.task('default', ['scripts', 'stylesheets']);
