@@ -75,7 +75,20 @@ var MiradorRuler = {
          * Mirador.Window
          */
         (function($) {
-            var bindEvents = $.Window.prototype.bindEvents;
+            var bindEvents = $.Window.prototype.bindEvents,
+                listenForActions = $.Window.prototype.listenForActions;
+
+            $.Window.prototype.listenForActions = function() {
+                var _this = this;
+                listenForActions.apply(this, arguments);
+
+                this.eventEmitter.subscribe('showRulerUI' + this.id, function() {
+                    _this.element.find('.mirador-icon-ruler').css('display', '');
+                });
+                this.eventEmitter.subscribe('hideRulerUI' + this.id, function() {
+                    _this.element.find('.mirador-icon-ruler').css('display', 'none');
+                });
+            };
 
             $.Window.prototype.bindEvents = function() {
                 var _this = this;
@@ -83,7 +96,6 @@ var MiradorRuler = {
 
                 this.element.find('.window-manifest-navigation').prepend(self.template());
 
-                // TODO: disable these ruler methods if no physical dimension data is available
                 this.element.find('.mirador-icon-ruler').on('mouseenter', function() {
                     _this.element.find('.ruler-options-list').stop().slideFadeToggle(300);
                     _this.element.find('.ruler-icon-grey').hide();
@@ -388,7 +400,7 @@ var MiradorRuler = {
                     if (imageResource.getImageType() === 'main' && imageResource.getStatus() === 'drawn') {
                         // fetch physdim stuff and do magic
                         jQuery.getJSON(imageResource.tileSource).done(function(data) {
-                            function physdimServiceIsValid(service) {
+                            function isValidPhysdimService(service) {
                                 if ((service.profile !== 'http://iiif.io/api/annex/services/physdim')
                                     || (service['@context'] !== 'http://iiif.io/api/annex/services/physdim/1/context.json')) {
                                     console.warn('Physical dimension service is either invalid or not well-formed:');
@@ -399,24 +411,43 @@ var MiradorRuler = {
                                 }
                             }
 
-                            if (physdimServiceIsValid(data.service)) {
-                                var metersPerPhysicalUnit = {
-                                    'mm': 0.001,
-                                    'cm': 0.01,
-                                    'in': 0.0254
-                                };
-                                var ppm = 1 / (metersPerPhysicalUnit[data.service.physicalUnits] * data.service.physicalScale);
-            
-                                var settings = jQuery.extend(true, {}, self.settings, {
-                                    'pixelsPerMeter': ppm
-                                });
-                                _this.osd.scalebar(settings);
+                            // TODO: ask technical group if need to check for more than one external service in info.json
+                            if (data.hasOwnProperty('service')) {
 
-                                // Do we need this?
-                                _this.osd.hasPhysicalDimensionData = true;
+                                // look for physdim service
+                                var physdimService;
+                                if (Array.isArray(data.service)) {
+                                    physdimService = data.service.find(function(e) {
+                                        return isValidPhysdimService(e);
+                                    });
+                                } else {
+                                    physdimService = isValidPhysdimService(data.service) ? data.service : undefined;
+                                }
+                                if (physdimService !== undefined) {
+                                    var metersPerPhysicalUnit = {
+                                        'mm': 0.001,
+                                        'cm': 0.01,
+                                        'in': 0.0254
+                                    };
+                                    var ppm = 1 / (metersPerPhysicalUnit[data.service.physicalUnits] * data.service.physicalScale);
+            
+                                    var settings = jQuery.extend(true, {}, self.settings, {
+                                        'pixelsPerMeter': ppm
+                                    });
+                                    _this.osd.scalebar(settings);
+
+                                    // Do we need this?
+                                    _this.osd.hasPhysicalDimensionData = true;
+
+                                    // render UI controls for ruler
+                                    _this.eventEmitter.publish('showRulerUI' + _this.windowId);
+                                } else {
+                                    console.warn('Physical Dimension service unavailable for ' + imageResource.tileSource)
+                                    _this.eventEmitter.publish('hideRulerUI' + _this.windowId);
+                                }
                             } else {
-                                console.warn('Physical Dimension service for ' + data.service['@id'] + ' is invalid')
-                                return;
+                                console.warn('Physical Dimension service unavailable for ' + imageResource.tileSource)
+                                _this.eventEmitter.publish('hideRulerUI' + _this.windowId);
                             }
                         });
                     }
