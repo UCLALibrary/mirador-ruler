@@ -25,7 +25,7 @@ var MiradorRuler = {
     template: Mirador.Handlebars.compile([
         '<a href="javascript:;" class="mirador-btn mirador-icon-ruler mirador-tooltip" title="{{t "rulerSettingsTooltip"}}">',
             '<i class="fa fa-lg fa-fw ruler-icon-grey"></i>',
-            '<i class="fa fa-lg fa-fw ruler-icon"></i>',
+            '<i class="fa fa-lg fa-fw ruler-icon" style="display: none;"></i>',
             '<i class="fa fa-caret-down"></i>',
             '<ul class="dropdown ruler-options-list">',
                 '<li class="ruler-hide"><i class="fa fa-ban fa-lg fa-fw"></i> {{t "hideRuler"}}</li>',
@@ -95,6 +95,7 @@ var MiradorRuler = {
                 bindEvents.apply(this, arguments);
 
                 this.element.find('.window-manifest-navigation').prepend(self.template());
+                this.element.find('.mirador-icon-ruler').css('display', 'none');
 
                 this.element.find('.mirador-icon-ruler').on('mouseenter', function() {
                     _this.element.find('.ruler-options-list').stop().slideFadeToggle(300);
@@ -105,7 +106,7 @@ var MiradorRuler = {
                     _this.element.find('.ruler-icon').hide();
                     _this.element.find('.ruler-icon-grey').show();
                 });
-                _this.element.find('.ruler-icon').hide();
+                _this.element.find('.mirador-icon-ruler').hide();
 
                 this.element.find('.ruler-hide').on('click', function() {
                   _this.setRulerVisibility('invisible');
