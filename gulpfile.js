@@ -6,6 +6,7 @@ var cleanCSS = require('gulp-clean-css');
 var merge = require('merge-stream');
 var pump = require('pump');
 var download = require('gulp-download');
+var runSequence = require('run-sequence');
 
 const paths = {
     vendor: [
@@ -14,25 +15,27 @@ const paths = {
 }
 
 gulp.task('clean', function() {
-    del('dist');
+    return del('dist');
 });
 
-gulp.task('scripts', ['clean'], function(cb) {
-    pump([
+gulp.task('scripts', function() {
+    return pump([
         merge(
             download(paths.vendor).pipe(uglify()),
             gulp.src('src/*.js').pipe(uglify())
         ),
         concat('MiradorRuler.min.js'),
         gulp.dest('dist')
-    ], cb);
+    ]);
 });
 
-gulp.task('stylesheets', ['clean'], function() {
+gulp.task('stylesheets', function() {
     return gulp.src('src/*.css')
         .pipe(cleanCSS())
         .pipe(concat('MiradorRuler.min.css'))
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['scripts', 'stylesheets']);
+gulp.task('default', function() {
+    runSequence('clean', ['scripts', 'stylesheets']);
+});
