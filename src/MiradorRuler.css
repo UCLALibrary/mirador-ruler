@@ -31,3 +31,7 @@
 .mirador-container .mirador-viewer a.mirador-icon-ruler:hover {
   color: black;
 }
+
+.mirador-container .ruler-options-list {
+  right: 0;
+}
