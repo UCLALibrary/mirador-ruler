@@ -84,6 +84,7 @@ var MiradorRuler = {
 
                 this.eventEmitter.subscribe('showRulerUI' + this.id, function() {
                     _this.element.find('.mirador-icon-ruler').css('display', '');
+                    _this.setRulerVisibility('visible');
                 });
                 this.eventEmitter.subscribe('hideRulerUI' + this.id, function() {
                     _this.element.find('.mirador-icon-ruler').css('display', 'none');
