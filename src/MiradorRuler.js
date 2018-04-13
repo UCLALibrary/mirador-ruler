@@ -46,12 +46,12 @@ var MiradorRuler = {
     ].join('')),
 
     settings: {
-        'type': 3,
+        'type': OpenSeadragon.ScalebarType.MACRO,
         'minWidth': '300px',
-        'location': 1,
+        'location': OpenSeadragon.ScalebarLocation.BOTTOM_LEFT,
         'xOffset': 10,
         'yOffset': 10,
-        'orientation': 1,
+        'orientation': OpenSeadragon.ScalebarOrientation.VERTICAL,
         'stayInsideImage': false,
         'color': 'black',
         'fontColor': 'rgb(100, 100, 100)',
